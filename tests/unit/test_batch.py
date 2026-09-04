@@ -52,3 +52,26 @@ def test_that_allocation_is_idempotent():
     batch.allocate(order_line)
 
     assert batch.available_quantity == 8
+
+
+def test_cannot_deallocate_if_pre_allocated():
+    batch, order_line = make_batch_and_line(sku="BLUE-VASE", batch_qty=10, line_qty=2)
+
+    assert batch.can_deallocate(order_line) == False
+
+
+def test_can_deallocate_pre_allocated_line():
+    batch, order_line = make_batch_and_line(sku="BLUE-VASE", batch_qty=10, line_qty=2)
+
+    batch.allocate(order_line)
+
+    assert batch.can_deallocate(order_line)
+
+
+def test_deallocate_pre_allocated_line_does_not_reduce_batch_qty():
+    batch, order_line = make_batch_and_line(sku="BLUE-VASE", batch_qty=10, line_qty=2)
+
+    batch.allocate(order_line)
+    batch.deallocate(order_line)
+
+    assert batch.available_quantity == 10

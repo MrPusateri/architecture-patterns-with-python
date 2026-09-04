@@ -23,10 +23,19 @@ class Batch:
         return self._purchased_qty - self.allocated_quantity
 
 
+    def can_allocate(self, order_line: OrderLine) -> bool:
+        return self.available_quantity >= order_line.qty and self.sku == order_line.sku
+
+
     def allocate(self, order_line: OrderLine) -> None:
         if self.can_allocate(order_line):
             self._allocated_lines.add(order_line)
 
 
-    def can_allocate(self, order_line: OrderLine) -> bool:
-        return self.available_quantity >= order_line.qty and self.sku == order_line.sku
+    def can_deallocate(self, order_line: OrderLine) -> bool:
+        return order_line in self._allocated_lines
+
+
+    def deallocate(self, order_line: OrderLine) -> None:
+        if self.can_deallocate(order_line):
+            self._allocated_lines.remove(order_line)
