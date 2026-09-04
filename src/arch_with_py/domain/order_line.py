@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-@dataclass
+
+@dataclass(frozen=True)
 class OrderLine:
     order_reference: str
     sku: str
