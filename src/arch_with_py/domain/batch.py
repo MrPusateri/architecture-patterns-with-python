@@ -1,6 +1,8 @@
-from arch_with_py.domain.order_line import OrderLine
+from __future__ import annotations
 from typing import Optional, Set
 from datetime import date
+
+from arch_with_py.domain.order_line import OrderLine
 
 
 class Batch:
@@ -11,6 +13,31 @@ class Batch:
         self.eta = eta
         self._purchased_qty = qty
         self._allocated_lines: Set[OrderLine] = set()
+
+
+    def __repr__(self):
+        return f"<Batch {self.reference}>"
+
+
+    def __eq__(self, other: Batch):
+        if not isinstance(other, Batch):
+            return False
+
+        return other.reference == self.reference
+
+
+    def __hash__(self):
+        return hash(self.reference)
+
+
+    def __gt__(self, other: Batch):
+        if self.eta is None:
+            return False
+
+        if other.eta is None:
+            return True
+
+        return self.eta > other.eta
 
 
     @property
